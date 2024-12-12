@@ -1,11 +1,12 @@
 import React from "react";
 import { Card, CardContent, CardMedia, Typography, Button, Grid, Box } from "@mui/material";
-import data from "../data.json"; // Import the default export
 import defaultImage from '../assets/pictures/deaultImage.jpg';
 
 
-const NewsCard = () => {
-  const articles = data.articles; // Access the articles property
+const NewsCard = ({articles}) => {
+  // const articles = data.articles; // Access the articles property
+
+  
 
   return (
     <Box sx={{ p: 4, backgroundColor: "#121212", minHeight: "100vh" }}>
