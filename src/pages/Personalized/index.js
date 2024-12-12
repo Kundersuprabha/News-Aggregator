@@ -11,6 +11,8 @@ import {
   Drawer
 } from "@mui/material";
 import FilterSidebar from "../../component/FilterSidebar";
+import NewsCard from "../../component/NewsCard";
+import data from '../../data.json'
 
 const Personalized = () => {
   const [filters, setFilters] = useState({
@@ -25,87 +27,109 @@ const Personalized = () => {
   const [newsData, setNewsData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = React.useState(false);
+  const [filterSet, setFilterSet] = useState(false);
+  const [values, setValues] = useState({
+    source: [],
+    author: [],
+    category: []
+  });
 
-  const toggleDrawer = (newOpen: boolean) => () => {
+  const API_KEY = "9c3ed8ee95884dec979460a60f96675b";
+
+  const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
   };
 
+  const handleFilterChange = (type, value) => {
+    console.log(type, value, 'updatedFilter type value')
+    // Update the filter state based on the filter type (sources, authors, categories)
+    setFilters((prev) => ({
+      ...prev,
+      [type]: prev[type].includes(value)
+        ? prev[type].filter((item) => item !== value)
+        : [...prev[type], value],
+    }));
+
+    let filteredData = data.articles;
+
+  // Apply filter for sources
+  if (filters.selectedSources.length > 0) {
+    filteredData = filteredData.filter((article) =>
+      filters.selectedSources.includes(article.source?.name || "Unknown Source")
+    );
+  }
+
+  // Apply filter for authors
+  if (filters.selectedAuthors.length > 0) {
+    filteredData = filteredData.filter((article) =>
+      filters.selectedAuthors.includes(article.author || "Anonymous")
+    );
+  }
+
+  // Apply filter for categories
+  if (filters.selectedCategories.length > 0) {
+    filteredData = filteredData.filter((article) =>
+      filters.selectedCategories.includes(article.category || "General")
+    );
+  }
+
+  // Update newsData with filtered data
+  setNewsData(filteredData);
+  setFilterSet(true); 
+  };
+  
+
   const fetchNews = async () => {
-    const query = [
-      filters.selectedSources.length ? `sources=${filters.selectedSources.join(",")}` : "",
-      filters.selectedAuthors.length ? `authors=${filters.selectedAuthors.join(",")}` : "",
-      filters.selectedCategories.length ? `categories=${filters.selectedCategories.join(",")}` : "",
-    ]
-      .filter(Boolean)
-      .join("&");
+    const sources = [
+      ...new Set(data.articles.map((article) => article.source?.name || "Unknown Source")),
+    ].slice(0, 10);
 
-    setLoading(true);
+    const authors = [
+      ...new Set(data.articles.map((article) => article.author || "Anonymous")),
+    ].slice(0, 10);
 
-    try {
-      const response = await fetch(
-        `https://newsapi.org/v2/everything?${query}&apiKey=YOUR_API_KEY`
-      );
-      const data = await response.json();
-      setNewsData(data.articles || []);
-    } catch (error) {
-      console.error("Error fetching news:", error);
-    } finally {
-      setLoading(false);
-    }
+    const categories = ["General", "Technology", "Health", "Sports"];
+
+    setValues({
+      source: sources,
+      author: authors,
+      category: categories,
+    });
+
+
+    console.log(sources, authors, categories, 'fetchData');
+     // Set flag to show filtered data
   };
 
   useEffect(() => {
+    console.log('fetchData i have called', filters);
     fetchNews();
-  }, [filters.selectedSources, filters.selectedAuthors, filters.selectedCategories]);
+  }, [filters.selectedSources, filters.selectedAuthors, filters.selectedCategories, newsData]);
 
   return (
     <>
       <Navbar />
       <Box display="flex" flexDirection="column" alignItems="center" padding={2}>
+        <Button onClick={toggleDrawer(true)}>Open drawer</Button>
+        <FilterSidebar
+          open={open}
+          onClose={toggleDrawer(false)}
+          filters={filters}
+          setFilters={setFilters}
+          values={values}
+          handleFilterChange={handleFilterChange} // Pass handleFilterChange here
+        />
         {loading ? (
           <CircularProgress />
-        ) : newsData.length ? (
-          newsData.map((article, index) => (
-            <Card
-              key={index}
-              variant="outlined"
-              sx={{
-                marginBottom: 2,
-                width: "80%",
-                backgroundColor: "#f9f9f9",
-              }}
-            >
-              <CardContent>
-                <Typography variant="h6" gutterBottom>
-                  {article.title}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  {article.description}
-                </Typography>
-              </CardContent>
-              <CardActions>
-                <Button
-                  size="small"
-                  color="primary"
-                  href={article.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Read More
-                </Button>
-              </CardActions>
-            </Card>
-          ))
+        ) : filterSet ? (
+          <NewsCard articles={newsData} />
         ) : (
-          <>
           <Typography>No news available for selected filters.</Typography>
-          <Button onClick={toggleDrawer(true)}>Open drawer</Button>
-          <FilterSidebar open={open} onClose={toggleDrawer(false)} filters={filters} setFilters={setFilters} />
-          </>
         )}
       </Box>
     </>
   );
 };
+
 
 export default Personalized;

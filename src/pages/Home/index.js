@@ -12,7 +12,7 @@ const Home = () => {
       const response = await fetch(`https://newsapi.org/v2/everything?q=${search}&apiKey=${API_KEY}`);
       const jsonData = await response.json();
       console.log(jsonData.articles);
-      const filteredData = jsonData.articles; // Limit to 10 articles
+      const filteredData = jsonData.articles; 
       setNewsData(filteredData);
     } catch (error) {
       console.error("Error fetching data:", error);

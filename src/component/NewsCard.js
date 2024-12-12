@@ -4,9 +4,6 @@ import defaultImage from '../assets/pictures/deaultImage.jpg';
 
 
 const NewsCard = ({articles}) => {
-  // const articles = data.articles; // Access the articles property
-
-  
 
   return (
     <Box sx={{ p: 4, backgroundColor: "#121212", minHeight: "100vh" }}>
