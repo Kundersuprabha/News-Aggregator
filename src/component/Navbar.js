@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
 import {
   AppBar,
   styled,
@@ -59,6 +60,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const Navbar = ({ handleInput, setSearch }) => {
+  const navigate = useNavigate()
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [selectedCategory, setSelectedCategory] = React.useState("General");
 
@@ -130,7 +132,7 @@ const Navbar = ({ handleInput, setSearch }) => {
             />
           </Box>
                 <Typography sx={{ color: "white", cursor: "pointer", fontSize: "1rem" }}>Home</Typography>
-                <Typography sx={{ color: "white", cursor: "pointer", fontSize: "1rem" }}>Personalized</Typography>
+                <Typography sx={{ color: "white", cursor: "pointer", fontSize: "1rem" }} onClick={() => {  navigate('/personalized')}}>Personalized</Typography>
                 <Button
                   aria-controls="category-menu"
                   aria-haspopup="true"
