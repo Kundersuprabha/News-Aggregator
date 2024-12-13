@@ -3,12 +3,8 @@ import Navbar from "../../component/Navbar";
 import {
   Box,
   CircularProgress,
-  Card,
-  CardContent,
-  CardActions,
   Typography,
   Button,
-  Drawer
 } from "@mui/material";
 import FilterSidebar from "../../component/FilterSidebar";
 import NewsCard from "../../component/NewsCard";
@@ -109,7 +105,7 @@ const Personalized = () => {
   return (
     <>
       <Navbar />
-      <Box display="flex" flexDirection="column" alignItems="center" padding={2}>
+      <Box display="flex" flexDirection="column"  padding={2}>
         <Button onClick={toggleDrawer(true)}>Open drawer</Button>
         <FilterSidebar
           open={open}
