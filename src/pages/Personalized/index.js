@@ -9,6 +9,7 @@ import {
 import FilterSidebar from "../../component/FilterSidebar";
 import NewsCard from "../../component/NewsCard";
 import data from '../../data.json'
+import DefaultPersonalizePage from "../../component/DefaultPersonalizedPage";
 
 const Personalized = () => {
   const [filters, setFilters] = useState({
@@ -30,7 +31,6 @@ const Personalized = () => {
     category: []
   });
 
-  const API_KEY = "9c3ed8ee95884dec979460a60f96675b";
 
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
@@ -102,8 +102,20 @@ const Personalized = () => {
   return (
     <>
       <Navbar isPersonalized={true} />
+      <Box 
+        display="flex" 
+        justifyContent="center" 
+        padding={2} 
+      >
+        <Button 
+          onClick={toggleDrawer(true)} 
+          variant="contained"
+        >
+          Set Personalized News
+        </Button>
+      </Box>
       <Box display="flex" flexDirection="column"  padding={2}>
-        <Button onClick={toggleDrawer(true)}>Open drawer</Button>
+        
         <FilterSidebar
           open={open}
           onClose={toggleDrawer(false)}
@@ -117,7 +129,7 @@ const Personalized = () => {
         ) : filterSet ? (
           <NewsCard articles={newsData} />
         ) : (
-          <Typography>No news available for selected filters.</Typography>
+          <DefaultPersonalizePage personalized={toggleDrawer(true)} />
         )}
       </Box>
     </>

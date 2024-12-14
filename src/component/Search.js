@@ -2,7 +2,6 @@ import {
     styled,
     alpha,
     InputBase,
-    
   } from "@mui/material";
   import SearchIcon from "@mui/icons-material/Search";
 
