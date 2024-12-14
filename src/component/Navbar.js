@@ -60,7 +60,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-const Navbar = ({ handleInput, setSearch }) => {
+const Navbar = ({ handleInput, setSearch, setSelectedSource }) => {
   const navigate = useNavigate();
   const [categoryAnchorEl, setCategoryAnchorEl] = useState(null);
   const [newsAnchorEl, setNewsAnchorEl] = useState(null);
@@ -87,145 +87,144 @@ const Navbar = ({ handleInput, setSearch }) => {
   };
 
   const handleNewsSelect = (news) => {
-    setSearch(news.toLowerCase()); // Fix the incorrect toLowerCase function
-    setSelectedNews(news);
-    setNewsAnchorEl(null);
+    setSelectedSource(news); // Update the selected news source
+    setSelectedNews(news); // Update the selected news for UI
+    setNewsAnchorEl(null); // Close the menu
   };
 
   return (
     <AppBar position="sticky" sx={{ background: "black" }}>
       <Stack direction="row" spacing={2}>
-      <NewsLogo />
-      <Container maxWidth="xl">
-        <Stack direction="row" justifyContent="space-between">
-          <Toolbar disableGutters>
-            <Box
-              sx={{
-                flexGrow: 1,
-                display: { xs: "none", md: "flex" },
-                alignItems: "center",
-              }}
-            >
-              <Stack direction="row" spacing={4} alignItems="center">
-                <Typography
-                  sx={{ color: "white", cursor: "pointer", fontSize: "1rem" }}
-                  onClick={() => navigate("/")}
-                >
-                  Home
-                </Typography>
-                <Typography
-                  sx={{ color: "white", cursor: "pointer", fontSize: "1rem" }}
-                  onClick={() => navigate("/personalized")}
-                >
-                  Personalized
-                </Typography>
-                <Button
-                  aria-controls="category-menu"
-                  aria-haspopup="true"
-                  onClick={handleCategoryMenuOpen}
-                  sx={{
-                    color: "white",
-                    fontSize: "1rem",
-                    textTransform: "none",
-                    "&:hover": {
-                      backgroundColor: "rgba(255, 255, 255, 0.1)",
-                    },
-                  }}
-                >
-                  {selectedCategory}
-                </Button>
-                <Menu
-                  id="category-menu"
-                  anchorEl={categoryAnchorEl}
-                  open={Boolean(categoryAnchorEl)}
-                  onClose={handleMenuClose}
-                  MenuListProps={{ "aria-labelledby": "basic-button" }}
-                  PaperProps={{
-                    style: {
-                      backgroundColor: "#222",
+        <NewsLogo />
+        <Container maxWidth="xl">
+          <Stack direction="row" justifyContent="space-between">
+            <Toolbar disableGutters>
+              <Box
+                sx={{
+                  flexGrow: 1,
+                  display: { xs: "none", md: "flex" },
+                  alignItems: "center",
+                }}
+              >
+                <Stack direction="row" spacing={4} alignItems="center">
+                  <Typography
+                    sx={{ color: "white", cursor: "pointer", fontSize: "1rem" }}
+                    onClick={() => navigate("/")}
+                  >
+                    Home
+                  </Typography>
+                  <Typography
+                    sx={{ color: "white", cursor: "pointer", fontSize: "1rem" }}
+                    onClick={() => navigate("/personalized")}
+                  >
+                    Personalized
+                  </Typography>
+                  <Button
+                    aria-controls="category-menu"
+                    aria-haspopup="true"
+                    onClick={handleCategoryMenuOpen}
+                    sx={{
                       color: "white",
-                      fontSize: "0.9rem",
-                    },
-                  }}
-                >
-                  {categories.map((category) => (
-                    <MenuItem
-                      key={category}
-                      onClick={() => handleCategorySelect(category)}
-                      sx={{
-                        "&:hover": {
-                          backgroundColor: "rgba(255, 255, 255, 0.2)",
-                        },
-                      }}
-                    >
-                      {category}
-                    </MenuItem>
-                  ))}
-                </Menu>
-                <Button
-                  aria-controls="news-menu"
-                  aria-haspopup="true"
-                  onClick={handleNewsMenuOpen}
-                  sx={{
-                    color: "white",
-                    fontSize: "1rem",
-                    textTransform: "none",
-                    "&:hover": {
-                      backgroundColor: "rgba(255, 255, 255, 0.1)",
-                    },
-                  }}
-                >
-                  {selectedNews}
-                </Button>
-                <Menu
-                  id="news-menu"
-                  anchorEl={newsAnchorEl}
-                  open={Boolean(newsAnchorEl)}
-                  onClose={handleMenuClose}
-                  MenuListProps={{ "aria-labelledby": "basic-button" }}
-                  PaperProps={{
-                    style: {
-                      backgroundColor: "#222",
+                      fontSize: "1rem",
+                      textTransform: "none",
+                      "&:hover": {
+                        backgroundColor: "rgba(255, 255, 255, 0.1)",
+                      },
+                    }}
+                  >
+                    {selectedCategory}
+                  </Button>
+                  <Menu
+                    id="category-menu"
+                    anchorEl={categoryAnchorEl}
+                    open={Boolean(categoryAnchorEl)}
+                    onClose={handleMenuClose}
+                    MenuListProps={{ "aria-labelledby": "basic-button" }}
+                    PaperProps={{
+                      style: {
+                        backgroundColor: "#222",
+                        color: "white",
+                        fontSize: "0.9rem",
+                      },
+                    }}
+                  >
+                    {categories.map((category) => (
+                      <MenuItem
+                        key={category}
+                        onClick={() => handleCategorySelect(category)}
+                        sx={{
+                          "&:hover": {
+                            backgroundColor: "rgba(255, 255, 255, 0.2)",
+                          },
+                        }}
+                      >
+                        {category}
+                      </MenuItem>
+                    ))}
+                  </Menu>
+                  <Button
+                    aria-controls="news-menu"
+                    aria-haspopup="true"
+                    onClick={handleNewsMenuOpen}
+                    sx={{
                       color: "white",
-                      fontSize: "0.9rem",
-                    },
-                  }}
-                >
-                  {news.map((newsItem) => (
-                    <MenuItem
-                      key={newsItem}
-                      onClick={() => handleNewsSelect(newsItem)}
-                      sx={{
-                        "&:hover": {
-                          backgroundColor: "rgba(255, 255, 255, 0.2)",
-                        },
-                      }}
-                    >
-                      {newsItem}
-                    </MenuItem>
-                  ))}
-                </Menu>
-              </Stack>
-            </Box>
-          </Toolbar>
-          <Toolbar>
-            <Search>
-              <SearchIconWrapper>
-                <SearchIcon />
-              </SearchIconWrapper>
-              <StyledInputBase
-                placeholder="Search…"
-                inputProps={{ "aria-label": "search" }}
-                onChange={handleInput}
-              />
-            </Search>
-          </Toolbar>
-        </Stack>
-      </Container>
+                      fontSize: "1rem",
+                      textTransform: "none",
+                      "&:hover": {
+                        backgroundColor: "rgba(255, 255, 255, 0.1)",
+                      },
+                    }}
+                  >
+                    {selectedNews}
+                  </Button>
+                  <Menu
+                    id="news-menu"
+                    anchorEl={newsAnchorEl}
+                    open={Boolean(newsAnchorEl)}
+                    onClose={handleMenuClose}
+                    MenuListProps={{ "aria-labelledby": "basic-button" }}
+                    PaperProps={{
+                      style: {
+                        backgroundColor: "#222",
+                        color: "white",
+                        fontSize: "0.9rem",
+                      },
+                    }}
+                  >
+                    {news.map((newsItem) => (
+                      <MenuItem
+                        key={newsItem}
+                        onClick={() => handleNewsSelect(newsItem)}
+                        sx={{
+                          "&:hover": {
+                            backgroundColor: "rgba(255, 255, 255, 0.2)",
+                          },
+                        }}
+                      >
+                        {newsItem}
+                      </MenuItem>
+                    ))}
+                  </Menu>
+                </Stack>
+              </Box>
+            </Toolbar>
+            <Toolbar>
+              <Search>
+                <SearchIconWrapper>
+                  <SearchIcon />
+                </SearchIconWrapper>
+                <StyledInputBase
+                  placeholder="Search…"
+                  inputProps={{ "aria-label": "search" }}
+                  onChange={handleInput}
+                />
+              </Search>
+            </Toolbar>
+          </Stack>
+        </Container>
       </Stack>
     </AppBar>
   );
 };
-
 
 export default Navbar;

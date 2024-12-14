@@ -5,7 +5,6 @@ import defaultImage from '../assets/pictures/deaultImage.jpg';
 
 const NewsCard = ({articles}) => {
 
-  console.log("NewsCard", articles)
   return (
     <Box sx={{ p: 4, backgroundColor: "#121212", minHeight: "100vh" }}>
       <Grid container spacing={4}>
