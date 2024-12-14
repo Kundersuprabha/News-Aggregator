@@ -101,7 +101,7 @@ const Personalized = () => {
 
   return (
     <>
-      <Navbar />
+      <Navbar isPersonalized={true} />
       <Box display="flex" flexDirection="column"  padding={2}>
         <Button onClick={toggleDrawer(true)}>Open drawer</Button>
         <FilterSidebar

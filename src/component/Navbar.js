@@ -1,228 +1,181 @@
-import {useState} from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   AppBar,
-  styled,
-  alpha,
   Box,
-  InputBase,
-  Toolbar,
   Container,
+  Drawer,
+  IconButton,
   Stack,
   Typography,
-  Menu,
-  MenuItem,
-  Button,
+  useMediaQuery,
 } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import NewsLogo  from './NewsLogo'
-import {news, categories} from '../constant/data'
+import MenuIcon from "@mui/icons-material/Menu";
+import NewsLogo from "./NewsLogo";
+import { news, categories } from "../constant/data";
+import DropDownMenu from "./DropDownMenu";
+import Search from "./Search";
+import Accordian from "./Accordian";
 
-const Search = styled("div")(({ theme }) => ({
-  position: "relative",
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  "&:hover": {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginLeft: 0,
-  width: "100%",
-  [theme.breakpoints.up("sm")]: {
-    marginLeft: theme.spacing(1),
-    width: "auto",
-  },
-}));
-
-const SearchIconWrapper = styled("div")(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: "100%",
-  position: "absolute",
-  pointerEvents: "none",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: "inherit",
-  width: "100%",
-  "& .MuiInputBase-input": {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create("width"),
-    [theme.breakpoints.up("sm")]: {
-      width: "12ch",
-      "&:focus": {
-        width: "20ch",
-      },
-    },
-  },
-}));
-
-const Navbar = ({ handleInput, setSearch, setSelectedSource }) => {
+const Navbar = ({ handleInput, setSearch, setSelectedSource, isPersonalized }) => {
   const navigate = useNavigate();
+  const isSmall = useMediaQuery("(max-width:899px)");
+
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [categoryAnchorEl, setCategoryAnchorEl] = useState(null);
   const [newsAnchorEl, setNewsAnchorEl] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("General");
   const [selectedNews, setSelectedNews] = useState("All Data Source");
 
-  const handleCategoryMenuOpen = (event) => {
-    setCategoryAnchorEl(event.currentTarget);
-  };
-
-  const handleNewsMenuOpen = (event) => {
-    setNewsAnchorEl(event.currentTarget);
-  };
-
+  // Handlers for dropdown menus
+  const handleCategoryMenuOpen = (event) => setCategoryAnchorEl(event.currentTarget);
+  const handleNewsMenuOpen = (event) => setNewsAnchorEl(event.currentTarget);
   const handleMenuClose = () => {
     setCategoryAnchorEl(null);
     setNewsAnchorEl(null);
   };
 
   const handleCategorySelect = (category) => {
-    setSearch(category.toLowerCase()); // Update search state in lowercase
-    setSelectedCategory(category); // Update the selected category for UI
-    setCategoryAnchorEl(null); // Close the menu
+    setSearch(category.toLowerCase());
+    setSelectedCategory(category);
+    setDrawerOpen(false);
+    handleMenuClose();
   };
 
   const handleNewsSelect = (news) => {
-    setSelectedSource(news); // Update the selected news source
-    setSelectedNews(news); // Update the selected news for UI
-    setNewsAnchorEl(null); // Close the menu
+    setSelectedSource(news);
+    setSelectedNews(news);
+    setDrawerOpen(false);
+    handleMenuClose();
   };
+
+  // Drawer Content
+  const renderDrawerContent = () => (
+    <Box
+      sx={{
+        width: 250,
+        display: "flex",
+        flexDirection: "column",
+        p: 2,
+      }}
+    >
+      <Typography
+        sx={{ color: "black", cursor: "pointer", mb: 2, fontSize: "1rem" }}
+        onClick={() => {
+          navigate("/");
+          setDrawerOpen(false);
+        }}
+      >
+        Home
+      </Typography>
+      <Typography
+        sx={{ color: "black", cursor: "pointer", mb: 2, fontSize: "1rem" }}
+        onClick={() => {
+          navigate("/personalized");
+          setDrawerOpen(false);
+        }}
+      >
+        Personalized
+      </Typography>
+
+      {/* Dropdown Menus */}
+      {!isPersonalized && (
+        <>
+          <Accordian
+            id="category-menu"
+            selectedValue={selectedCategory}
+            menuItems={categories}
+            onSelect={handleCategorySelect}
+            style={{ mb: 2 }}
+          />
+          <Accordian
+            id="news-menu"
+            selectedValue={selectedNews}
+            menuItems={news}
+            onSelect={handleNewsSelect}
+          />
+        </>
+      )}
+      <Box sx={{ mt: 2 }}>
+        <Search handleInput={handleInput} />
+      </Box>
+    </Box>
+  );
 
   return (
     <AppBar position="sticky" sx={{ background: "black" }}>
-      <Stack direction="row" spacing={2}>
-        <NewsLogo />
-        <Container maxWidth="xl">
-          <Stack direction="row" justifyContent="space-between">
-            <Toolbar disableGutters>
-              <Box
-                sx={{
-                  flexGrow: 1,
-                  display: { xs: "none", md: "flex" },
-                  alignItems: "center",
-                }}
+      <Container maxWidth="xl">
+        <Stack direction="row" justifyContent="space-between" alignItems="center">
+          {/* NewsLogo Section */}
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <NewsLogo />
+          </Box>
+
+          {/* Hamburger Menu for Small Screens */}
+          {isSmall ? (
+            <>
+              <IconButton
+                edge="start"
+                color="inherit"
+                aria-label="menu"
+                onClick={() => setDrawerOpen(true)}
               >
-                <Stack direction="row" spacing={4} alignItems="center">
-                  <Typography
-                    sx={{ color: "white", cursor: "pointer", fontSize: "1rem" }}
-                    onClick={() => navigate("/")}
-                  >
-                    Home
-                  </Typography>
-                  <Typography
-                    sx={{ color: "white", cursor: "pointer", fontSize: "1rem" }}
-                    onClick={() => navigate("/personalized")}
-                  >
-                    Personalized
-                  </Typography>
-                  <Button
-                    aria-controls="category-menu"
-                    aria-haspopup="true"
-                    onClick={handleCategoryMenuOpen}
-                    sx={{
-                      color: "white",
-                      fontSize: "1rem",
-                      textTransform: "none",
-                      "&:hover": {
-                        backgroundColor: "rgba(255, 255, 255, 0.1)",
-                      },
-                    }}
-                  >
-                    {selectedCategory}
-                  </Button>
-                  <Menu
+                <MenuIcon />
+              </IconButton>
+              <Drawer
+                anchor="top"
+                open={drawerOpen}
+                onClose={() => setDrawerOpen(false)}
+              >
+                {renderDrawerContent()}
+              </Drawer>
+            </>
+          ) : (
+            // Regular Content for Larger Screens
+            <Stack direction="row" spacing={4} alignItems="center">
+              <Typography
+                sx={{ color: "white", cursor: "pointer", fontSize: "1rem" }}
+                onClick={() => navigate("/")}
+              >
+                Home
+              </Typography>
+              <Typography
+                sx={{ color: "white", cursor: "pointer", fontSize: "1rem" }}
+                onClick={() => navigate("/personalized")}
+              >
+                Personalized
+              </Typography>
+
+              {/* Dropdown Menus */}
+              {!isPersonalized && (
+                <>
+                  <DropDownMenu
                     id="category-menu"
+                    selectedValue={selectedCategory}
+                    menuItems={categories}
                     anchorEl={categoryAnchorEl}
-                    open={Boolean(categoryAnchorEl)}
+                    onOpen={handleCategoryMenuOpen}
                     onClose={handleMenuClose}
-                    MenuListProps={{ "aria-labelledby": "basic-button" }}
-                    PaperProps={{
-                      style: {
-                        backgroundColor: "#222",
-                        color: "white",
-                        fontSize: "0.9rem",
-                      },
-                    }}
-                  >
-                    {categories.map((category) => (
-                      <MenuItem
-                        key={category}
-                        onClick={() => handleCategorySelect(category)}
-                        sx={{
-                          "&:hover": {
-                            backgroundColor: "rgba(255, 255, 255, 0.2)",
-                          },
-                        }}
-                      >
-                        {category}
-                      </MenuItem>
-                    ))}
-                  </Menu>
-                  <Button
-                    aria-controls="news-menu"
-                    aria-haspopup="true"
-                    onClick={handleNewsMenuOpen}
-                    sx={{
-                      color: "white",
-                      fontSize: "1rem",
-                      textTransform: "none",
-                      "&:hover": {
-                        backgroundColor: "rgba(255, 255, 255, 0.1)",
-                      },
-                    }}
-                  >
-                    {selectedNews}
-                  </Button>
-                  <Menu
+                    onSelect={handleCategorySelect}
+                  />
+                  <DropDownMenu
                     id="news-menu"
+                    selectedValue={selectedNews}
+                    menuItems={news}
                     anchorEl={newsAnchorEl}
-                    open={Boolean(newsAnchorEl)}
+                    onOpen={handleNewsMenuOpen}
                     onClose={handleMenuClose}
-                    MenuListProps={{ "aria-labelledby": "basic-button" }}
-                    PaperProps={{
-                      style: {
-                        backgroundColor: "#222",
-                        color: "white",
-                        fontSize: "0.9rem",
-                      },
-                    }}
-                  >
-                    {news.map((newsItem) => (
-                      <MenuItem
-                        key={newsItem}
-                        onClick={() => handleNewsSelect(newsItem)}
-                        sx={{
-                          "&:hover": {
-                            backgroundColor: "rgba(255, 255, 255, 0.2)",
-                          },
-                        }}
-                      >
-                        {newsItem}
-                      </MenuItem>
-                    ))}
-                  </Menu>
-                </Stack>
+                    onSelect={handleNewsSelect}
+                  />
+                </>
+              )}
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <Search handleInput={handleInput} />
               </Box>
-            </Toolbar>
-            <Toolbar>
-              <Search>
-                <SearchIconWrapper>
-                  <SearchIcon />
-                </SearchIconWrapper>
-                <StyledInputBase
-                  placeholder="Search…"
-                  inputProps={{ "aria-label": "search" }}
-                  onChange={handleInput}
-                />
-              </Search>
-            </Toolbar>
-          </Stack>
-        </Container>
-      </Stack>
+            </Stack>
+          )}
+        </Stack>
+      </Container>
     </AppBar>
   );
 };
