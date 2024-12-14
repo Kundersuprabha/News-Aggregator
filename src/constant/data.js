@@ -3,7 +3,6 @@ export const  news = [
     "News API",
     "The Guardian",
     "New York Times",
-    "Gnews",
   ];
 
 export const categories = [

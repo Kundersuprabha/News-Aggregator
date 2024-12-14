@@ -43,8 +43,6 @@ export const fetchNewsAPIArticles = async (query, filters) => {
       ? `https://newsapi.org/v2/everything?q=${query}&from=${validDate}&apiKey=${NEWS_API_KEY}`
       : `https://newsapi.org/v2/top-headlines?country=us&category=${filters.category}&apiKey=${NEWS_API_KEY}`;
   
-    console.log("Requesting URL:", url);
-    console.log("Valid Request Date:", validDate);
   
     const data = await makeApiRequest(url, {});
     return data ? normalizeArticles(data.articles, "NewsAPI") : [];

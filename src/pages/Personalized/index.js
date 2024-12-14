@@ -37,7 +37,6 @@ const Personalized = () => {
   };
 
   const handleFilterChange = (type, value) => {
-    console.log(type, value, 'updatedFilter type value')
     // Update the filter state based on the filter type (sources, authors, categories)
     setFilters((prev) => ({
       ...prev,
@@ -93,12 +92,10 @@ const Personalized = () => {
     });
 
 
-    console.log(sources, authors, categories, 'fetchData');
      // Set flag to show filtered data
   };
 
   useEffect(() => {
-    console.log('fetchData i have called', filters);
     fetchNews();
   }, [filters.selectedSources, filters.selectedAuthors, filters.selectedCategories, newsData]);
 
