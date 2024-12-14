@@ -5,6 +5,7 @@ import defaultImage from '../assets/pictures/deaultImage.jpg';
 
 const NewsCard = ({articles}) => {
 
+  console.log("NewsCard", articles)
   return (
     <Box sx={{ p: 4, backgroundColor: "#121212", minHeight: "100vh" }}>
       <Grid container spacing={4}>
@@ -15,7 +16,7 @@ const NewsCard = ({articles}) => {
                 component="img"
                 alt={article?.title || "News Image"}
                 height="180"
-                image={article?.urlToImage || defaultImage}
+                image={article?.imgSrc || defaultImage}
               />
               <CardContent>
                 <Typography gutterBottom variant="h6" component="div" sx={{ fontWeight: "bold" }}>

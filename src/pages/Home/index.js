@@ -1,29 +1,42 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../../component/Navbar";
 import NewsCard from "../../component/NewsCard";
+import { fetchNewsAPIArticles, fetchGuardianArticles, fetchNYTimesArticles } from "../../services/api";
 
 const Home = () => {
   const [search, setSearch] = useState("india"); // Default search
   const [newsData, setNewsData] = useState(null);
-  const API_KEY = "9c3ed8ee95884dec979460a60f96675b";
+  const [selectedSource, setSelectedSource] = useState("All Data Source"); // Manage the selected source
 
   const getData = async () => {
     try {
-      const response = await fetch(`https://newsapi.org/v2/everything?q=${search}&apiKey=${API_KEY}`);
-      const jsonData = await response.json();
-      console.log(jsonData.articles);
-      const filteredData = jsonData.articles; 
-      setNewsData(filteredData);
+      let allArticles = [];
+
+      // Call APIs based on the selected source
+      if (selectedSource === "All Data Source" || selectedSource === "NewsAPI") {
+        const newsAPIArticles = await fetchNewsAPIArticles(search, { date: "2023-01-01", category: "general" });
+        allArticles = [...allArticles, ...newsAPIArticles];
+      }
+
+      if (selectedSource === "All Data Source" || selectedSource === "The Guardian") {
+        const guardianArticles = await fetchGuardianArticles(search, { date: "2023-01-01", category: "general" });
+        allArticles = [...allArticles, ...guardianArticles];
+      }
+
+      if (selectedSource === "All Data Source" || selectedSource === "The New York Times") {
+        const nytArticles = await fetchNYTimesArticles(search, { date: "2023-01-01", category: "general" });
+        allArticles = [...allArticles, ...nytArticles];
+      }
+
+      setNewsData(allArticles);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
   useEffect(() => {
-    if (search) {
-      getData(); // Fetch data when `search` changes
-    }
-  }, [search]);
+    getData(); // Fetch data on search or selectedSource change
+  }, [search, selectedSource]);
 
   const handleInput = (e) => {
     setSearch(e.target.value); // Update search term from input
@@ -31,7 +44,7 @@ const Home = () => {
 
   return (
     <div>
-      <Navbar handleInput={handleInput} getData={getData} setSearch={setSearch} />
+      <Navbar handleInput={handleInput} setSearch={setSearch} setSelectedSource={setSelectedSource} />
       <NewsCard articles={newsData} />
     </div>
   );

@@ -1,4 +1,4 @@
-import * as React from "react";
+import {useState} from "react";
 import { useNavigate } from "react-router-dom";
 import {
   AppBar,
@@ -15,7 +15,8 @@ import {
   Button,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-import world from "../assets/video/world1.mp4";
+import NewsLogo  from './NewsLogo'
+import {news, categories} from '../constant/data'
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -60,83 +61,68 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 const Navbar = ({ handleInput, setSearch }) => {
-  const navigate = useNavigate()
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [selectedCategory, setSelectedCategory] = React.useState("General");
+  const navigate = useNavigate();
+  const [categoryAnchorEl, setCategoryAnchorEl] = useState(null);
+  const [newsAnchorEl, setNewsAnchorEl] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState("General");
+  const [selectedNews, setSelectedNews] = useState("All Data Source");
 
-  const handleMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
+  const handleCategoryMenuOpen = (event) => {
+    setCategoryAnchorEl(event.currentTarget);
+  };
+
+  const handleNewsMenuOpen = (event) => {
+    setNewsAnchorEl(event.currentTarget);
   };
 
   const handleMenuClose = () => {
-    setAnchorEl(null);
+    setCategoryAnchorEl(null);
+    setNewsAnchorEl(null);
   };
 
   const handleCategorySelect = (category) => {
     setSearch(category.toLowerCase()); // Update search state in lowercase
     setSelectedCategory(category); // Update the selected category for UI
-    setAnchorEl(null); // Close the menu
+    setCategoryAnchorEl(null); // Close the menu
   };
 
-  const categories = [
-    "General",
-    "Business",
-    "Entertainment",
-    "Health",
-    "Science",
-    "Sports",
-    "Technology",
-  ];
+  const handleNewsSelect = (news) => {
+    setSearch(news.toLowerCase()); // Fix the incorrect toLowerCase function
+    setSelectedNews(news);
+    setNewsAnchorEl(null);
+  };
 
   return (
     <AppBar position="sticky" sx={{ background: "black" }}>
+      <Stack direction="row" spacing={2}>
+      <NewsLogo />
       <Container maxWidth="xl">
         <Stack direction="row" justifyContent="space-between">
           <Toolbar disableGutters>
-            <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" }, alignItems: "center" }}>
+            <Box
+              sx={{
+                flexGrow: 1,
+                display: { xs: "none", md: "flex" },
+                alignItems: "center",
+              }}
+            >
               <Stack direction="row" spacing={4} alignItems="center">
-              <Box
-            sx={{
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
-              alignItems: 'center',
-            }}
-          >
-            <video
-              src={world}
-              autoPlay
-              loop
-              muted
-              style={{
-                height: '70px', // Adjust video height
-                width: 'auto',  // Maintain aspect ratio
-              }}
-            />
-          </Box>
-          <Box
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-            }}
-          >
-            <video
-              src={world}
-              autoPlay
-              loop
-              muted
-              style={{
-                height: '40px', // Adjust for smaller screen sizes
-                width: 'auto',
-              }}
-            />
-          </Box>
-                <Typography sx={{ color: "white", cursor: "pointer", fontSize: "1rem" }}>Home</Typography>
-                <Typography sx={{ color: "white", cursor: "pointer", fontSize: "1rem" }} onClick={() => {  navigate('/personalized')}}>Personalized</Typography>
+                <Typography
+                  sx={{ color: "white", cursor: "pointer", fontSize: "1rem" }}
+                  onClick={() => navigate("/")}
+                >
+                  Home
+                </Typography>
+                <Typography
+                  sx={{ color: "white", cursor: "pointer", fontSize: "1rem" }}
+                  onClick={() => navigate("/personalized")}
+                >
+                  Personalized
+                </Typography>
                 <Button
                   aria-controls="category-menu"
                   aria-haspopup="true"
-                  onClick={handleMenuOpen}
+                  onClick={handleCategoryMenuOpen}
                   sx={{
                     color: "white",
                     fontSize: "1rem",
@@ -150,8 +136,8 @@ const Navbar = ({ handleInput, setSearch }) => {
                 </Button>
                 <Menu
                   id="category-menu"
-                  anchorEl={anchorEl}
-                  open={Boolean(anchorEl)}
+                  anchorEl={categoryAnchorEl}
+                  open={Boolean(categoryAnchorEl)}
                   onClose={handleMenuClose}
                   MenuListProps={{ "aria-labelledby": "basic-button" }}
                   PaperProps={{
@@ -176,7 +162,49 @@ const Navbar = ({ handleInput, setSearch }) => {
                     </MenuItem>
                   ))}
                 </Menu>
-                <Typography sx={{ color: "white", cursor: "pointer", fontSize: "1rem" }}>All Data Source</Typography>
+                <Button
+                  aria-controls="news-menu"
+                  aria-haspopup="true"
+                  onClick={handleNewsMenuOpen}
+                  sx={{
+                    color: "white",
+                    fontSize: "1rem",
+                    textTransform: "none",
+                    "&:hover": {
+                      backgroundColor: "rgba(255, 255, 255, 0.1)",
+                    },
+                  }}
+                >
+                  {selectedNews}
+                </Button>
+                <Menu
+                  id="news-menu"
+                  anchorEl={newsAnchorEl}
+                  open={Boolean(newsAnchorEl)}
+                  onClose={handleMenuClose}
+                  MenuListProps={{ "aria-labelledby": "basic-button" }}
+                  PaperProps={{
+                    style: {
+                      backgroundColor: "#222",
+                      color: "white",
+                      fontSize: "0.9rem",
+                    },
+                  }}
+                >
+                  {news.map((newsItem) => (
+                    <MenuItem
+                      key={newsItem}
+                      onClick={() => handleNewsSelect(newsItem)}
+                      sx={{
+                        "&:hover": {
+                          backgroundColor: "rgba(255, 255, 255, 0.2)",
+                        },
+                      }}
+                    >
+                      {newsItem}
+                    </MenuItem>
+                  ))}
+                </Menu>
               </Stack>
             </Box>
           </Toolbar>
@@ -194,8 +222,10 @@ const Navbar = ({ handleInput, setSearch }) => {
           </Toolbar>
         </Stack>
       </Container>
+      </Stack>
     </AppBar>
   );
 };
+
 
 export default Navbar;
