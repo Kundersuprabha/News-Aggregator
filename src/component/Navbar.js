@@ -96,9 +96,10 @@ const Navbar = ({ handleInput, setSearch, setSelectedSource, isPersonalized }) =
           />
         </>
       )}
-      <Box sx={{ mt: 2 }}>
+      {!isPersonalized && <Box sx={{ mt: 2 }}>
         <Search handleInput={handleInput} />
       </Box>
+      }
     </Box>
   );
 
@@ -169,9 +170,11 @@ const Navbar = ({ handleInput, setSearch, setSelectedSource, isPersonalized }) =
                   />
                 </>
               )}
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <Search handleInput={handleInput} />
-              </Box>
+              { 
+                !isPersonalized && <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <Search handleInput={handleInput} />
+                </Box>
+              }
             </Stack>
           )}
         </Stack>
