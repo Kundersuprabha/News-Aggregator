@@ -10,7 +10,11 @@ import {
   Typography,
   useMediaQuery,
 } from "@mui/material";
+import moment from "moment";
+import { forwardRef } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import NewsLogo from "./NewsLogo";
 import { news, categories } from "../constant/data";
 import DropDownMenu from "./DropDownMenu";
@@ -26,6 +30,9 @@ const Navbar = ({ handleInput, setSearch, setSelectedSource, isPersonalized }) =
   const [newsAnchorEl, setNewsAnchorEl] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("General");
   const [selectedNews, setSelectedNews] = useState("All Data Source");
+  const [startDate, setStartDate] = useState(
+    moment(new Date()).format("YYYY-MM-DD")
+  );
 
   // Handlers for dropdown menus
   const handleCategoryMenuOpen = (event) => setCategoryAnchorEl(event.currentTarget);
@@ -49,6 +56,29 @@ const Navbar = ({ handleInput, setSearch, setSelectedSource, isPersonalized }) =
     handleMenuClose();
   };
 
+  const handleDateChange = (date) => {
+    const formattedDate = moment(date).format("YYYY-MM-DD");
+    setStartDate(formattedDate);
+    localStorage.setItem("time", formattedDate);
+  };
+
+  const CustomInput = forwardRef(({ value, onClick }, ref) => (
+    <button
+      style={{
+        background: "none",
+        border: "1px solid #ccc",
+        padding: "5px 10px",
+        borderRadius: "4px",
+        cursor: "pointer",
+        color: "white", // Set text color to white
+      }}
+      onClick={onClick}
+      ref={ref}
+    >
+      {value || "Select Date"} {/* Default text when no date is selected */}
+    </button>
+  ));
+  
   // Drawer Content
   const renderDrawerContent = () => (
     <Box
@@ -172,6 +202,13 @@ const Navbar = ({ handleInput, setSearch, setSelectedSource, isPersonalized }) =
               )}
               { 
                 !isPersonalized && <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <DatePicker
+                    selected={startDate}
+                    onChange={handleDateChange}
+                    dateFormat="yyyy-MM-dd"
+                    customInput={<CustomInput />}
+                    maxDate={new Date()} 
+                  />
                   <Search handleInput={handleInput} />
                 </Box>
               }

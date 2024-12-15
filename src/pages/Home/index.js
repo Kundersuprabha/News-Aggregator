@@ -14,17 +14,17 @@ const Home = () => {
 
       // Call APIs based on the selected source
       if (selectedSource === "All Data Source" || selectedSource === "News API") {
-        const newsAPIArticles = await fetchNewsAPIArticles(search, { date: "2023-01-01", category: "general" });
+        const newsAPIArticles = await fetchNewsAPIArticles(search, { date: "2024-01-01", category: "general" });
         allArticles = [...allArticles, ...newsAPIArticles];
       }
 
       if (selectedSource === "All Data Source" || selectedSource === "The Guardian") {
-        const guardianArticles = await fetchGuardianArticles(search, { date: "2023-01-01", category: "general" });
+        const guardianArticles = await fetchGuardianArticles(search, { date: "2024-01-01", category: "general" });
         allArticles = [...allArticles, ...guardianArticles];
       }
 
-      if (selectedSource === "All Data Source" || selectedSource === "The New York Times") {
-        const nytArticles = await fetchNYTimesArticles(search, { date: "2023-01-01", category: "general" });
+      if (selectedSource === "All Data Source" || selectedSource === "New York Times") {
+        const nytArticles = await fetchNYTimesArticles(search, { date: "2024-01-01", category: "general" });
         allArticles = [...allArticles, ...nytArticles];
       }
 

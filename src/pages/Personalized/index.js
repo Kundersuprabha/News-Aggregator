@@ -1,133 +1,134 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../../component/Navbar";
-import {
-  Box,
-  CircularProgress,
-  Typography,
-  Button,
-} from "@mui/material";
+import { Box, CircularProgress, Typography, Button } from "@mui/material";
 import FilterSidebar from "../../component/FilterSidebar";
 import NewsCard from "../../component/NewsCard";
-import data from '../../data.json'
 import DefaultPersonalizePage from "../../component/DefaultPersonalizedPage";
+import {
+  fetchGuardianArticles,
+  fetchNYTimesArticles,
+} from "../../services/api";
 
 const Personalized = () => {
   const [filters, setFilters] = useState({
-    sources: [],
-    authors: [],
-    categories: [],
     selectedSources: [],
     selectedAuthors: [],
     selectedCategories: [],
   });
-
-  const [newsData, setNewsData] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [open, setOpen] = React.useState(false);
-  const [filterSet, setFilterSet] = useState(false);
   const [values, setValues] = useState({
     source: [],
     author: [],
-    category: []
+    category: [],
   });
-
+  const [newsData, setNewsData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [filterSet, setFilterSet] = useState(false)
+  const [open, setOpen] = useState(false);
+  const [data, setData] = useState([])
 
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
   };
 
-  const handleFilterChange = (type, value) => {
-    // Update the filter state based on the filter type (sources, authors, categories)
-    setFilters((prev) => ({
-      ...prev,
-      [type]: prev[type].includes(value)
-        ? prev[type].filter((item) => item !== value)
-        : [...prev[type], value],
-    }));
+  const fetchInitialFilters = async () => {
+    try {
+      const guardianArticles = await fetchGuardianArticles("general");
+      const nytArticles = await fetchNYTimesArticles("general");
 
-    let filteredData = data.articles;
+      const allArticles = [...guardianArticles, ...nytArticles];
 
-  // Apply filter for sources
-  if (filters.selectedSources.length > 0) {
-    filteredData = filteredData.filter((article) =>
-      filters.selectedSources.includes(article.source?.name || "Unknown Source")
-    );
-  }
+      const sources = [...new Set(allArticles.map((article) => article.source?.name))];
+      const authors = [...new Set(allArticles.map((article) => article.author))];
+      const categories = ["General", "Technology", "Health", "Sports"];
 
-  // Apply filter for authors
-  if (filters.selectedAuthors.length > 0) {
-    filteredData = filteredData.filter((article) =>
-      filters.selectedAuthors.includes(article.author || "Anonymous")
-    );
-  }
-
-  // Apply filter for categories
-  if (filters.selectedCategories.length > 0) {
-    filteredData = filteredData.filter((article) =>
-      filters.selectedCategories.includes(article.category || "General")
-    );
-  }
-
-  // Update newsData with filtered data
-  setNewsData(filteredData);
-  setFilterSet(true); 
+      setValues({ source: sources, author: authors, category: categories });
+      setNewsData(allArticles);
+    } catch (error) {
+      console.error("Error fetching initial filters:", error);
+    }
+   
   };
-  
 
-  const fetchNews = async () => {
-    const sources = [
-      ...new Set(data.articles.map((article) => article.source?.name || "Unknown Source")),
-    ].slice(0, 10);
+  const applyFilters = () => {
+    setLoading(true); // Start loading spinner
+    try {
+    let filteredArticles = newsData;
 
-    const authors = [
-      ...new Set(data.articles.map((article) => article.author || "Anonymous")),
-    ].slice(0, 10);
+    if (filters.selectedAuthors.length > 0) {
+      filteredArticles = filteredArticles.filter((article) =>
+        filters.selectedAuthors.some(
+          (selectedAuthor) =>
+            (article.author)
+              .trim()
+              .toLowerCase()
+              .includes(selectedAuthor.trim().toLowerCase())
+        )
+      );
+    }
 
-    const categories = ["General", "Technology", "Health", "Sports"];
+    if (filters.selectedCategories.length > 0) {
+      filteredArticles = filteredArticles.filter((article) =>
+        filters.selectedCategories.includes(article.category)
+      );
+    }
 
-    setValues({
-      source: sources,
-      author: authors,
-      category: categories,
+    if (filters.selectedSources.length > 0) {
+      filteredArticles = filteredArticles.filter((article) =>
+        filters.selectedSources.includes(article.source?.name)
+      );
+    }
+
+    setData(filteredArticles);
+  } catch (error) {
+    console.error("Error applying filters:", error);
+  } finally {
+    setLoading(false); // End loading spinner
+  }
+  };
+
+  const handleFilterChange = (type, value) => {
+    setFilters((prev) => {
+      const updatedFilters = prev[type].includes(value)
+        ? prev[type].filter((item) => item !== value)
+        : [...prev[type], value];
+
+      // Apply filter immediately after updating state
+      return { ...prev, [type]: updatedFilters };
     });
-
-
-     // Set flag to show filtered data
+    setFilterSet(true)
   };
 
   useEffect(() => {
-    fetchNews();
-  }, [filters.selectedSources, filters.selectedAuthors, filters.selectedCategories, newsData]);
+    fetchInitialFilters();
+  }, []);
+
+  useEffect(() => {
+    if(filterSet){
+      applyFilters();
+    }
+  }, [filters]);
 
   return (
     <>
       <Navbar isPersonalized={true} />
-      <Box 
-        display="flex" 
-        justifyContent="center" 
-        padding={2} 
-      >
-        <Button 
-          onClick={toggleDrawer(true)} 
-          variant="contained"
-        >
+      <Box display="flex" justifyContent="center" padding={2}>
+        <Button onClick={toggleDrawer(true)} variant="contained">
           Set Personalized News
         </Button>
       </Box>
-      <Box display="flex" flexDirection="column"  padding={2}>
-        
-        <FilterSidebar
+      <Box display="flex" flexDirection="column" padding={2}> 
+      <FilterSidebar
           open={open}
           onClose={toggleDrawer(false)}
           filters={filters}
           setFilters={setFilters}
           values={values}
-          handleFilterChange={handleFilterChange} // Pass handleFilterChange here
+          handleFilterChange={handleFilterChange}
         />
         {loading ? (
           <CircularProgress />
         ) : filterSet ? (
-          <NewsCard articles={newsData} />
+          <NewsCard articles={data} />
         ) : (
           <DefaultPersonalizePage personalized={toggleDrawer(true)} />
         )}
@@ -135,6 +136,5 @@ const Personalized = () => {
     </>
   );
 };
-
 
 export default Personalized;
