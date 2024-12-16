@@ -61,6 +61,7 @@ const Navbar = ({ handleInput, setSearch, setSelectedSource, setIsDateChanged, i
     setStartDate(formattedDate);
     localStorage.setItem("time", formattedDate);
     setIsDateChanged(true); // Notify parent about the change
+    isSmall && setDrawerOpen(false)
   };
 
   const CustomInput = forwardRef(({ value, onClick }, ref) => (
@@ -68,7 +69,7 @@ const Navbar = ({ handleInput, setSearch, setSelectedSource, setIsDateChanged, i
       style={{
         background: "none",
         border: "1px solid #ccc",
-        padding: "5px 10px",
+        padding: !isSmall && "5px 10px",
         borderRadius: "4px",
         cursor: "pointer",
         color: "white",
@@ -76,7 +77,7 @@ const Navbar = ({ handleInput, setSearch, setSelectedSource, setIsDateChanged, i
       onClick={onClick}
       ref={ref}
     >
-      {value || "Select Date"}
+    <Typography color={isSmall ? 'black' : 'white'} fontSize="12px"> {value || "Select Date"}</Typography> 
     </button>
   ));
   
@@ -128,7 +129,15 @@ const Navbar = ({ handleInput, setSearch, setSelectedSource, setIsDateChanged, i
         </>
       )}
       {!isPersonalized && <Box sx={{ mt: 2 }}>
-        <Search handleInput={handleInput} />
+      <DatePicker
+        selected={startDate}
+        onChange={handleDateChange}
+        dateFormat="yyyy-MM-dd"
+        customInput={<CustomInput />}
+        maxDate={new Date()}
+        popperPlacement="bottom-start"  // Ensures it opens below
+        
+      />
       </Box>
       }
     </Box>
