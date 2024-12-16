@@ -6,7 +6,7 @@ const NewsLogo = () => {
     <Toolbar disableGutters>
       <Box
         sx={{
-          display: "flex", // Always display
+          display: "flex",
           alignItems: "center",
         }}
       >
@@ -14,7 +14,7 @@ const NewsLogo = () => {
           <Box
             sx={{
               mr: 2,
-              display: "flex", // Always display on all screen sizes
+              display: "flex",
               alignItems: "center",
             }}
           >
@@ -24,8 +24,8 @@ const NewsLogo = () => {
               loop
               muted
               style={{
-                height: "50px", // Smaller height for better fit on small screens
-                width: "auto",  // Maintain aspect ratio
+                height: "50px",
+                width: "auto",
               }}
             />
           </Box>

@@ -15,11 +15,11 @@ const Accordian = ({ id, selectedValue, menuItems, onSelect, style }) => {
       disableGutters
       square
       sx={{
-        backgroundColor: "transparent", // No background
-        boxShadow: "none", // Remove box shadow
-        margin: 0, // Remove margin
-        border: "none", // Remove border
-        "&:before": { display: "none" }, // Remove MUI's default line
+        backgroundColor: "transparent",
+        boxShadow: "none",
+        margin: 0,
+        border: "none",
+        "&:before": { display: "none" },
         ...style
       }}
     >
@@ -29,10 +29,10 @@ const Accordian = ({ id, selectedValue, menuItems, onSelect, style }) => {
         aria-controls={`${id}-content`}
         id={`${id}-header`}
         sx={{
-          minHeight: "auto", // Reduce extra height
-          padding: 0, // Remove padding
+          minHeight: "auto",
+          padding: 0,
           "& .MuiAccordionSummary-content": {
-            margin: 0, // Remove content margin
+            margin: 0,
           },
         }}
       >
@@ -41,10 +41,9 @@ const Accordian = ({ id, selectedValue, menuItems, onSelect, style }) => {
         </Typography>
       </AccordionSummary>
 
-      {/* Accordion Content */}
       <AccordionDetails
         sx={{
-          padding: 0, // Remove padding
+          padding: 0,
         }}
       >
         <List disablePadding>

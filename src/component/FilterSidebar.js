@@ -34,19 +34,18 @@ const FilterSidebar = ({
           border: "2px solid #ccc",
           borderRadius: "8px",
           width: 300,
-          position: "relative", // Allows positioning the close icon
+          position: "relative",
         }}
       >
-        {/* Close Icon for Small Screens */}
         {isSmall && (
           <Box
             sx={{
               display: "flex",
               justifyContent: "flex-end",
               alignItems: "right",
-              position: "relative", // Keeps it inside the box
-              height: "2rem", // Adjust the height of the header area
-              marginBottom: "1rem", // Add space below the close button
+              position: "relative",
+              height: "2rem",
+              marginBottom: "1rem",
             }}
           >
             <IconButton
@@ -54,7 +53,7 @@ const FilterSidebar = ({
               size="small" 
               sx={{
                 fontSize: "small",
-                color: "inherit", // Ensures it matches the theme colors
+                color: "inherit",
               }}
               aria-label="close"
             >

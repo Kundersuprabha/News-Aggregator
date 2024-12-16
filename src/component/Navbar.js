@@ -34,7 +34,6 @@ const Navbar = ({ handleInput, setSearch, setSelectedSource, isPersonalized }) =
     moment(new Date()).format("YYYY-MM-DD")
   );
 
-  // Handlers for dropdown menus
   const handleCategoryMenuOpen = (event) => setCategoryAnchorEl(event.currentTarget);
   const handleNewsMenuOpen = (event) => setNewsAnchorEl(event.currentTarget);
   const handleMenuClose = () => {
@@ -70,12 +69,12 @@ const Navbar = ({ handleInput, setSearch, setSelectedSource, isPersonalized }) =
         padding: "5px 10px",
         borderRadius: "4px",
         cursor: "pointer",
-        color: "white", // Set text color to white
+        color: "white",
       }}
       onClick={onClick}
       ref={ref}
     >
-      {value || "Select Date"} {/* Default text when no date is selected */}
+      {value || "Select Date"}
     </button>
   ));
   

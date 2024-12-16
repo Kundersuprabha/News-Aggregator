@@ -4,9 +4,9 @@ import NewsCard from "../../component/NewsCard";
 import { fetchNewsAPIArticles, fetchGuardianArticles, fetchNYTimesArticles } from "../../services/api";
 
 const Home = () => {
-  const [search, setSearch] = useState("india"); // Default search
+  const [search, setSearch] = useState("india");
   const [newsData, setNewsData] = useState(null);
-  const [selectedSource, setSelectedSource] = useState("All Data Source"); // Manage the selected source
+  const [selectedSource, setSelectedSource] = useState("All Data Source");
 
   const getData = async () => {
     try {
@@ -14,7 +14,7 @@ const Home = () => {
 
       // Call APIs based on the selected source
       if (selectedSource === "All Data Source" || selectedSource === "News API") {
-        const newsAPIArticles = await fetchNewsAPIArticles(search, { date: "2024-01-01", category: "general" });
+        const newsAPIArticles = await fetchNewsAPIArticles(search, { date: localStorage.getItem("time"), category: "general" });
         allArticles = [...allArticles, ...newsAPIArticles];
       }
 
@@ -37,11 +37,11 @@ const Home = () => {
   };
 
   useEffect(() => {
-    getData(); // Fetch data on search or selectedSource change
+    getData();
   }, [search, selectedSource]);
 
   const handleInput = (e) => {
-    setSearch(e.target.value); // Update search term from input
+    setSearch(e.target.value);
   };
 
   return (
