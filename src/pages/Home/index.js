@@ -9,37 +9,35 @@ const Home = () => {
   const [selectedSource, setSelectedSource] = useState("All Data Source");
   const [isDateChanged, setIsDateChanged] = useState(false);
 
-  const getData = async () => {
-    try {
-      let allArticles = [];
-
-      // Call APIs based on the selected source
-      if (selectedSource === "All Data Source" || selectedSource === "News API") {
-        const newsAPIArticles = await fetchNewsAPIArticles(search, { date: localStorage.getItem("time"), category: "general" });
-        allArticles = [...allArticles, ...newsAPIArticles];
-      }
-
-      if (selectedSource === "All Data Source" || selectedSource === "The Guardian") {
-        const guardianArticles = await fetchGuardianArticles(search, { date: localStorage.getItem('time'), category: "general" });
-
-        allArticles = [...allArticles, ...guardianArticles];
-      }
-
-      if (selectedSource === "All Data Source" || selectedSource === "New York Times") {
-        const nytArticles = await fetchNYTimesArticles(search, { date: localStorage.getItem('time'), category: "general" });
-        allArticles = [...allArticles, ...nytArticles];
-      }
-
-      setNewsData(allArticles);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
   useEffect(() => {
-    getData();
-    setIsDateChanged(false)
-     // eslint-disable-next-line react-hooks/exhaustive-deps
+    const fetchData = async () => {
+      try {
+        let allArticles = [];
+
+        // Call APIs based on the selected source
+        if (selectedSource === "All Data Source" || selectedSource === "News API") {
+          const newsAPIArticles = await fetchNewsAPIArticles(search, { date: localStorage.getItem("time"), category: "general" });
+          allArticles = [...allArticles, ...newsAPIArticles];
+        }
+
+        if (selectedSource === "All Data Source" || selectedSource === "The Guardian") {
+          const guardianArticles = await fetchGuardianArticles(search, { date: localStorage.getItem('time'), category: "general" });
+          allArticles = [...allArticles, ...guardianArticles];
+        }
+
+        if (selectedSource === "All Data Source" || selectedSource === "New York Times") {
+          const nytArticles = await fetchNYTimesArticles(search, { date: localStorage.getItem('time'), category: "general" });
+          allArticles = [...allArticles, ...nytArticles];
+        }
+
+        setNewsData(allArticles);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+    setIsDateChanged(false);
   }, [search, selectedSource, isDateChanged]);
 
   const handleInput = (e) => {
