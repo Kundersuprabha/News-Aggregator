@@ -21,7 +21,7 @@ import DropDownMenu from "./DropDownMenu";
 import Search from "./Search";
 import Accordian from "./Accordian";
 
-const Navbar = ({ handleInput, setSearch, setSelectedSource, isPersonalized }) => {
+const Navbar = ({ handleInput, setSearch, setSelectedSource, setIsDateChanged, isPersonalized }) => {
   const navigate = useNavigate();
   const isSmall = useMediaQuery("(max-width:899px)");
 
@@ -33,6 +33,7 @@ const Navbar = ({ handleInput, setSearch, setSelectedSource, isPersonalized }) =
   const [startDate, setStartDate] = useState(
     moment(new Date()).format("YYYY-MM-DD")
   );
+
 
   const handleCategoryMenuOpen = (event) => setCategoryAnchorEl(event.currentTarget);
   const handleNewsMenuOpen = (event) => setNewsAnchorEl(event.currentTarget);
@@ -59,6 +60,7 @@ const Navbar = ({ handleInput, setSearch, setSelectedSource, isPersonalized }) =
     const formattedDate = moment(date).format("YYYY-MM-DD");
     setStartDate(formattedDate);
     localStorage.setItem("time", formattedDate);
+    setIsDateChanged(true); // Notify parent about the change
   };
 
   const CustomInput = forwardRef(({ value, onClick }, ref) => (

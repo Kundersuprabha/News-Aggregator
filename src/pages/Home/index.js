@@ -7,6 +7,7 @@ const Home = () => {
   const [search, setSearch] = useState("india");
   const [newsData, setNewsData] = useState(null);
   const [selectedSource, setSelectedSource] = useState("All Data Source");
+  const [isDateChanged, setIsDateChanged] = useState(false);
 
   const getData = async () => {
     try {
@@ -20,7 +21,6 @@ const Home = () => {
 
       if (selectedSource === "All Data Source" || selectedSource === "The Guardian") {
         const guardianArticles = await fetchGuardianArticles(search, { date: localStorage.getItem('time'), category: "general" });
-        console.log(guardianArticles, 'Original Article:')
 
         allArticles = [...allArticles, ...guardianArticles];
       }
@@ -38,7 +38,8 @@ const Home = () => {
 
   useEffect(() => {
     getData();
-  }, [search, selectedSource]);
+    setIsDateChanged(false)
+  }, [search, selectedSource, isDateChanged]);
 
   const handleInput = (e) => {
     setSearch(e.target.value);
@@ -46,7 +47,7 @@ const Home = () => {
 
   return (
     <div>
-      <Navbar handleInput={handleInput} setSearch={setSearch} setSelectedSource={setSelectedSource} />
+      <Navbar handleInput={handleInput} setSearch={setSearch} setSelectedSource={setSelectedSource} setIsDateChanged={setIsDateChanged} />
       <NewsCard articles={newsData} />
     </div>
   );

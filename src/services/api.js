@@ -73,7 +73,6 @@ export const fetchNYTimesArticles = async (query, filters = {}) => {
   };
 
   const data = await makeApiRequest(url, params);
-  console.log(data?.response?.docs, "The nyttimes")
 
   return data ? normalizeArticles(data.response?.docs || [], "The New York Times") : [];
 };
