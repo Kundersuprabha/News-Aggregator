@@ -29,7 +29,7 @@ const NewsCard = ({articles}) => {
                     ▼ Source and Published Date
                   </Typography>
                   <Typography variant="caption" display="block" sx={{ color: "lightgray" }}>
-                    Source: {article?.source?.name || "Unknown"}
+                    Source: {article?.source?.name || article?.source || "Unknown"}
                   </Typography>
                   <Typography variant="caption" display="block" sx={{ color: "lightgray" }}>
                     Published at: {new Date(article?.publishedAt).toLocaleString() || "N/A"}

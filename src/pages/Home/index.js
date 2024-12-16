@@ -19,12 +19,14 @@ const Home = () => {
       }
 
       if (selectedSource === "All Data Source" || selectedSource === "The Guardian") {
-        const guardianArticles = await fetchGuardianArticles(search, { date: "2024-01-01", category: "general" });
+        const guardianArticles = await fetchGuardianArticles(search, { date: localStorage.getItem('time'), category: "general" });
+        console.log(guardianArticles, 'Original Article:')
+
         allArticles = [...allArticles, ...guardianArticles];
       }
 
       if (selectedSource === "All Data Source" || selectedSource === "New York Times") {
-        const nytArticles = await fetchNYTimesArticles(search, { date: "2024-01-01", category: "general" });
+        const nytArticles = await fetchNYTimesArticles(search, { date: localStorage.getItem('time'), category: "general" });
         allArticles = [...allArticles, ...nytArticles];
       }
 

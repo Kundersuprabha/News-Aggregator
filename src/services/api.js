@@ -1,7 +1,7 @@
 import axios from "axios";
 import newsImage from "../assets/pictures/deaultImage.jpg";
 
-const NEWS_API_KEY = "7187310c4f0d449db087c631f21da5fa";
+const NEWS_API_KEY = "821973d80ae24a5cbdd15a6a4e5d84e2";
 const GUARDIAN_API_KEY = "758d2d2a-cec1-4de0-8580-e013bf4157bc";
 const NYT_API_KEY = "AuVNp7XClx6YMdpvMYb82modBKc4Qkvb";
 
@@ -17,21 +17,40 @@ const makeApiRequest = async (url, params) => {
 };
 
 // Helper function to normalize article data
-const normalizeArticles = (articles, source) => {
-  return articles.map((article) => ({
-    title: article.title || article.webTitle || article.headline?.main || "No Title",
-    description:
-      article.description || article.fields?.trailText || article.lead_paragraph || "No Description",
-    url: article.url || article.webUrl || article.web_url || "#",
-    source: article?.source?.name || article?.fields?.publication || source || "Unknown Source",
-    publishedAt: article.publishedAt || article.webPublicationDate || article.pub_date || "Unknown Date",
-    author: article?.author || article?.fields?.byline || article?.byline?.original || "Unknown Author",
-    category: article?.category || article?.sectionName || "General",
-    imgSrc:
-      article?.urlToImage || article.image || article?.thumbnail || article?.main || newsImage,
-  }));
-};
+// const normalizeArticles = (articles, source) => {
+//   return articles.map((article) => ({
+//     title: article.title || article.webTitle || article.headline?.main || "No Title",
+//     description:
+//       article.description || article.fields?.trailText || article.lead_paragraph || "No Description",
+//     url: article.url || article.webUrl || article.web_url || "#",
+//     source: article?.source?.name || article?.fields?.publication || article?.source || source || "Unknown Source",
+//     publishedAt: article.publishedAt || article.webPublicationDate || article.pub_date || "Unknown Date",
+//     author: article?.author || article?.fields?.byline || article?.byline?.original || "Unknown Author",
+//     category: article?.category || article?.sectionName || "General",
+//     imgSrc:
+//       article?.urlToImage || article.image || article?.thumbnail ||article.fields?.thumbnail || article?.main || newsImage 
+//   }));
+// };
 
+const normalizeArticles = (articles, source) => {
+  return articles.map((article) => {
+    console.log("Original Article:", article?.source); // Log the original article for debugging
+    const normalizedArticle = {
+      title: article.title || article.webTitle || article.headline?.main || "No Title",
+      description:
+        article.description || article.fields?.trailText || article.lead_paragraph || "No Description",
+      url: article.url || article.webUrl || article.web_url || "#",
+      source: article?.source?.name  ||article?.source  || article?.fields?.publication ||  source || "Unknown Source",
+      publishedAt: article.publishedAt || article.webPublicationDate || article.pub_date || "Unknown Date",
+      author: article?.author || article?.fields?.byline || article?.byline?.original || "Unknown Author",
+      category: article?.category || article?.sectionName || "General",
+      imgSrc:
+        article?.urlToImage || article.image || article?.thumbnail || article.fields?.thumbnail || article?.main || newsImage,
+    };
+    console.log("Normalized Article:", normalizedArticle); // Log the normalized article
+    return normalizedArticle;
+  });
+};
 // Fetch NewsAPI articles
 export const fetchNewsAPIArticles = async (query, filters = {}) => {
   const { category } = filters;
@@ -72,5 +91,7 @@ export const fetchNYTimesArticles = async (query, filters = {}) => {
   };
 
   const data = await makeApiRequest(url, params);
+  console.log(data?.response?.docs, "The nyttimes")
+
   return data ? normalizeArticles(data.response?.docs || [], "The New York Times") : [];
 };
