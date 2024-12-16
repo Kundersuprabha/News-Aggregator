@@ -10,7 +10,7 @@ const NewsCard = ({articles}) => {
       <Grid container spacing={4}>
         {articles?.map((article, index) => (
           <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-            <Card sx={{ maxWidth: 345,minWidth: 300, backgroundColor: "#1e1e1e", color: "white" }}>
+            <Card sx={{ maxWidth: 345,minWidth: 280, backgroundColor: "#1e1e1e", color: "white" }}>
               <CardMedia
                 component="img"
                 alt={article?.title || "News Image"}

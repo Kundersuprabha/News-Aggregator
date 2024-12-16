@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from "react";
+import { Box, CircularProgress, Button, useMediaQuery } from "@mui/material";
 import Navbar from "../../component/Navbar";
-import { Box, CircularProgress, Typography, Button } from "@mui/material";
 import FilterSidebar from "../../component/FilterSidebar";
 import NewsCard from "../../component/NewsCard";
 import DefaultPersonalizePage from "../../component/DefaultPersonalizedPage";
 import {
   fetchGuardianArticles,
+  fetchNewsAPIArticles,
   fetchNYTimesArticles,
 } from "../../services/api";
+import { categories } from "../../constant/data";
 
 const Personalized = () => {
+  const  isSmall = useMediaQuery("(max-width:400px)");
+
   const [filters, setFilters] = useState({
     selectedSources: [],
     selectedAuthors: [],
@@ -32,14 +36,14 @@ const Personalized = () => {
 
   const fetchInitialFilters = async () => {
     try {
+      const newsApi = await fetchNewsAPIArticles("general");
       const guardianArticles = await fetchGuardianArticles("general");
       const nytArticles = await fetchNYTimesArticles("general");
 
-      const allArticles = [...guardianArticles, ...nytArticles];
+      const allArticles = [...newsApi, ...guardianArticles, ...nytArticles];
 
-      const sources = [...new Set(allArticles.map((article) => article.source?.name))];
+      const sources = [...new Set(allArticles.map((article) => article.source))];
       const authors = [...new Set(allArticles.map((article) => article.author))];
-      const categories = ["General", "Technology", "Health", "Sports"];
 
       setValues({ source: sources, author: authors, category: categories });
       setNewsData(allArticles);
@@ -50,7 +54,7 @@ const Personalized = () => {
   };
 
   const applyFilters = () => {
-    setLoading(true); // Start loading spinner
+    setLoading(true);
     try {
     let filteredArticles = newsData;
 
@@ -74,7 +78,7 @@ const Personalized = () => {
 
     if (filters.selectedSources.length > 0) {
       filteredArticles = filteredArticles.filter((article) =>
-        filters.selectedSources.includes(article.source?.name)
+        filters.selectedSources.includes(article.source)
       );
     }
 
@@ -116,17 +120,18 @@ const Personalized = () => {
           Set Personalized News
         </Button>
       </Box>
-      <Box display="flex" flexDirection="column" padding={2}> 
+      <Box display="flex" flexDirection="column" padding={isSmall ? 0 : 2}> 
       <FilterSidebar
           open={open}
           onClose={toggleDrawer(false)}
           filters={filters}
-          setFilters={setFilters}
           values={values}
           handleFilterChange={handleFilterChange}
         />
         {loading ? (
-          <CircularProgress />
+            <Box display="flex" justifyContent="center" padding={2}>
+              <CircularProgress />
+            </Box>
         ) : filterSet ? (
           <NewsCard articles={data} />
         ) : (

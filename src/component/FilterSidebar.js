@@ -6,9 +6,20 @@ import {
   FormControlLabel,
   Typography,
   Box,
+  IconButton,
+  useMediaQuery,
 } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
-const FilterSidebar = ({ filters, setFilters, open, onClose, values, handleFilterChange }) => {
+const FilterSidebar = ({
+  filters,
+  open,
+  onClose,
+  values,
+  handleFilterChange,
+}) => {
+  const isSmall = useMediaQuery("(max-width:400px)");
+
   const sources = values?.source || [];
   const authors = values?.author || [];
   const categories = values?.category || [];
@@ -20,19 +31,46 @@ const FilterSidebar = ({ filters, setFilters, open, onClose, values, handleFilte
           padding: "1rem",
           backgroundColor: "#fff",
           color: "black",
-          border: "2px solid #ccc", // Increased border size
-          borderRadius: "8px", // Optional: rounds the corners
-          width: 300, // Optional: adjust sidebar width
+          border: "2px solid #ccc",
+          borderRadius: "8px",
+          width: 300,
+          position: "relative", // Allows positioning the close icon
         }}
       >
-        <Typography variant="h6" gutterBottom sx={{ fontSize: "0.875rem" }}>
+        {/* Close Icon for Small Screens */}
+        {isSmall && (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+              alignItems: "right",
+              position: "relative", // Keeps it inside the box
+              height: "2rem", // Adjust the height of the header area
+              marginBottom: "1rem", // Add space below the close button
+            }}
+          >
+            <IconButton
+              onClick={onClose}
+              size="small" 
+              sx={{
+                fontSize: "small",
+                color: "inherit", // Ensures it matches the theme colors
+              }}
+              aria-label="close"
+            >
+              <CloseIcon />
+            </IconButton>
+          </Box>
+        )}
+
+        <Typography variant="h6" gutterBottom sx={{ fontSize: "0.875rem", mt: isSmall ? 4 : 0 }}>
           Filter By Sources
         </Typography>
         <FormGroup
           sx={{
             display: "flex",
             flexDirection: "row",
-            flexWrap: "wrap", // Makes checkboxes flow side by side
+            flexWrap: "wrap",
           }}
         >
           {sources.map((source) => (
@@ -40,7 +78,7 @@ const FilterSidebar = ({ filters, setFilters, open, onClose, values, handleFilte
               key={source}
               control={
                 <Checkbox
-                  size="small"  // Make the checkbox smaller
+                  size="small"
                   checked={filters.selectedSources.includes(source)}
                   onChange={() => handleFilterChange("selectedSources", source)}
                 />
@@ -57,7 +95,7 @@ const FilterSidebar = ({ filters, setFilters, open, onClose, values, handleFilte
           sx={{
             display: "flex",
             flexDirection: "row",
-            flexWrap: "wrap", // Makes checkboxes flow side by side
+            flexWrap: "wrap",
           }}
         >
           {authors.map((author) => (
@@ -65,7 +103,7 @@ const FilterSidebar = ({ filters, setFilters, open, onClose, values, handleFilte
               key={author}
               control={
                 <Checkbox
-                  size="small"  // Make the checkbox smaller
+                  size="small"
                   checked={filters.selectedAuthors.includes(author)}
                   onChange={() => handleFilterChange("selectedAuthors", author)}
                 />
@@ -84,7 +122,7 @@ const FilterSidebar = ({ filters, setFilters, open, onClose, values, handleFilte
               key={category}
               control={
                 <Checkbox
-                  size="small"  // Make the checkbox smaller
+                  size="small"
                   checked={filters.selectedCategories.includes(category)}
                   onChange={() => handleFilterChange("selectedCategories", category)}
                 />
@@ -97,6 +135,5 @@ const FilterSidebar = ({ filters, setFilters, open, onClose, values, handleFilte
     </Drawer>
   );
 };
-
 
 export default FilterSidebar;
