@@ -104,6 +104,7 @@ const Personalized = () => {
 
   useEffect(() => {
     fetchInitialFilters();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
