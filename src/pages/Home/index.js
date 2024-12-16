@@ -39,6 +39,7 @@ const Home = () => {
   useEffect(() => {
     getData();
     setIsDateChanged(false)
+     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search, selectedSource, isDateChanged]);
 
   const handleInput = (e) => {
