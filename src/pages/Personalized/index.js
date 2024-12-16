@@ -12,7 +12,7 @@ import {
 import { categories } from "../../constant/data";
 
 const Personalized = () => {
-  const  isSmall = useMediaQuery("(max-width:400px)");
+  const isSmall = useMediaQuery("(max-width:400px)");
 
   const [filters, setFilters] = useState({
     selectedSources: [],
@@ -26,9 +26,9 @@ const Personalized = () => {
   });
   const [newsData, setNewsData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [filterSet, setFilterSet] = useState(false)
+  const [filterSet, setFilterSet] = useState(false);
   const [open, setOpen] = useState(false);
-  const [data, setData] = useState([])
+  const [data, setData] = useState([]);
 
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
@@ -50,44 +50,6 @@ const Personalized = () => {
     } catch (error) {
       console.error("Error fetching initial filters:", error);
     }
-   
-  };
-
-  const applyFilters = () => {
-    setLoading(true);
-    try {
-    let filteredArticles = newsData;
-
-    if (filters.selectedAuthors.length > 0) {
-      filteredArticles = filteredArticles.filter((article) =>
-        filters.selectedAuthors.some(
-          (selectedAuthor) =>
-            (article.author)
-              .trim()
-              .toLowerCase()
-              .includes(selectedAuthor.trim().toLowerCase())
-        )
-      );
-    }
-
-    if (filters.selectedCategories.length > 0) {
-      filteredArticles = filteredArticles.filter((article) =>
-        filters.selectedCategories.includes(article.category)
-      );
-    }
-
-    if (filters.selectedSources.length > 0) {
-      filteredArticles = filteredArticles.filter((article) =>
-        filters.selectedSources.includes(article.source)
-      );
-    }
-
-    setData(filteredArticles);
-  } catch (error) {
-    console.error("Error applying filters:", error);
-  } finally {
-    setLoading(false); // End loading spinner
-  }
   };
 
   const handleFilterChange = (type, value) => {
@@ -96,10 +58,9 @@ const Personalized = () => {
         ? prev[type].filter((item) => item !== value)
         : [...prev[type], value];
 
-      // Apply filter immediately after updating state
       return { ...prev, [type]: updatedFilters };
     });
-    setFilterSet(true)
+    setFilterSet(true);
   };
 
   useEffect(() => {
@@ -108,10 +69,31 @@ const Personalized = () => {
   }, []);
 
   useEffect(() => {
-    if(filterSet){
-      applyFilters();
+    if (filterSet) {
+      setLoading(true);
+
+      const filteredArticles = newsData.filter((article) => {
+        const matchesAuthor =
+          filters.selectedAuthors.length === 0 ||
+          filters.selectedAuthors.some((selectedAuthor) =>
+            article.author?.trim().toLowerCase().includes(selectedAuthor.trim().toLowerCase())
+          );
+
+        const matchesCategory =
+          filters.selectedCategories.length === 0 ||
+          filters.selectedCategories.includes(article.category);
+
+        const matchesSource =
+          filters.selectedSources.length === 0 ||
+          filters.selectedSources.includes(article.source);
+
+        return matchesAuthor && matchesCategory && matchesSource;
+      });
+
+      setData(filteredArticles);
+      setLoading(false);
     }
-  }, [filters]);
+  }, [filterSet, filters, newsData]);
 
   return (
     <>
@@ -121,8 +103,8 @@ const Personalized = () => {
           Set Personalized News
         </Button>
       </Box>
-      <Box display="flex" flexDirection="column" padding={isSmall ? 0 : 2}> 
-      <FilterSidebar
+      <Box display="flex" flexDirection="column" padding={isSmall ? 0 : 2}>
+        <FilterSidebar
           open={open}
           onClose={toggleDrawer(false)}
           filters={filters}
@@ -130,9 +112,9 @@ const Personalized = () => {
           handleFilterChange={handleFilterChange}
         />
         {loading ? (
-            <Box display="flex" justifyContent="center" padding={2}>
-              <CircularProgress />
-            </Box>
+          <Box display="flex" justifyContent="center" padding={2}>
+            <CircularProgress />
+          </Box>
         ) : filterSet ? (
           <NewsCard articles={data} />
         ) : (
