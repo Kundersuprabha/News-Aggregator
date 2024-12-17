@@ -1,4 +1,52 @@
-<<<<<<< HEAD
+# News Aggregator Application
+React.js was used in the creation of this news aggregation website. The program gathers items from a variety of sources and presents them in an organized, readable manner. In addition to creating a customized news feed, users can filter results by date, topic, and source and search for items by keyword.
+
+# Features
+Article Search and Filtering Users can search for articles by entering keywords. Filtering options are available by date, category, and source.
+Personalized News Feed Users can customize their news feed by selecting preferred sources, categories, and authors.
+Mobile-Responsive Design The website is optimized for both desktop and mobile devices.
+
+Data Sources The application uses the following data sources:
+NewsAPI: Provides access to a wide range of news articles from various sources.
+The Guardian API: Fetches articles from The Guardian.
+New York Times API: Retrieves articles from The New York Times.
+
+# Technologies Used
+React.js: A JavaScript library for building user interfaces.
+Axios: For making HTTP requests to fetch data from APIs.
+MUI: For UI components and styling.
+Docker: For containerizing the application.
+
+# Dockerization
+Dockerfile
+The Dockerfile defines the steps to build the Docker image for the application.
+
+Use an official Node.js runtime as a parent image
+FROM node:18 AS build
+
+Set the working directory in the container
+WORKDIR /app
+
+Copy package.json and package-lock.json files
+COPY package*.json ./
+
+Install the dependencies
+RUN npm install
+
+Copy the rest of the application files
+COPY . .
+
+Run the React app
+RUN npm start
+
+# Build and Run the Docker Container
+Build the Docker Image: Open a terminal in the root directory of your project and run:
+
+docker build -t news:start .
+
+Run the Docker Container: To start a container from your image, run: docker run -p 3000:3000 news:start 
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
@@ -48,27 +96,26 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 
 ### Code Splitting
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+
 
 ### Analyzing the Bundle Size
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+
 
 ### Making a Progressive Web App
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+
 
 ### Advanced Configuration
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+
 
 ### Deployment
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+
 
 ### `npm run build` fails to minify
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
 =======
 # News-Aggregator
 >>>>>>> 65f03d547c435748f0c4c00b8d12e723c2f1938b

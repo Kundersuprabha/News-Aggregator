@@ -2,15 +2,18 @@ import React, { useState, useEffect } from "react";
 import Navbar from "../../component/Navbar";
 import NewsCard from "../../component/NewsCard";
 import { fetchNewsAPIArticles, fetchGuardianArticles, fetchNYTimesArticles } from "../../services/api";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const Home = () => {
   const [search, setSearch] = useState("india");
   const [newsData, setNewsData] = useState(null);
   const [selectedSource, setSelectedSource] = useState("All Data Source");
   const [isDateChanged, setIsDateChanged] = useState(false);
+  const [loading, setLoading] = useState(false); // Loading state
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true); // Set loading to true before fetching
       try {
         let allArticles = [];
 
@@ -33,6 +36,8 @@ const Home = () => {
         setNewsData(allArticles);
       } catch (error) {
         console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false); // Set loading to false after fetching
       }
     };
 
@@ -47,7 +52,13 @@ const Home = () => {
   return (
     <div>
       <Navbar handleInput={handleInput} setSearch={setSearch} setSelectedSource={setSelectedSource} setIsDateChanged={setIsDateChanged} />
-      <NewsCard articles={newsData} />
+      {loading ? (
+        <div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
+          <CircularProgress />
+        </div>
+      ) : (
+        <NewsCard articles={newsData} />
+      )}
     </div>
   );
 };

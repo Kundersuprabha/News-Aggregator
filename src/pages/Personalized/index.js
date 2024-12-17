@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, CircularProgress, Button, useMediaQuery } from "@mui/material";
+import { Box, CircularProgress, Button, useMediaQuery, Typography } from "@mui/material";
 import Navbar from "../../component/Navbar";
 import FilterSidebar from "../../component/FilterSidebar";
 import NewsCard from "../../component/NewsCard";
@@ -91,6 +91,7 @@ const Personalized = () => {
       });
 
       setData(filteredArticles);
+      console.log(filteredArticles, filteredArticles?.length, 'filteredArticles')
       setLoading(false);
     }
   }, [filterSet, filters, newsData]);
@@ -111,15 +112,27 @@ const Personalized = () => {
           values={values}
           handleFilterChange={handleFilterChange}
         />
-        {loading ? (
-          <Box display="flex" justifyContent="center" padding={2}>
-            <CircularProgress />
-          </Box>
-        ) : filterSet ? (
-          <NewsCard articles={data} />
-        ) : (
-          <DefaultPersonalizePage personalized={toggleDrawer(true)} />
-        )}
+          {loading ? (
+            <Box display="flex" justifyContent="center" padding={2}>
+              <CircularProgress />
+            </Box>
+          ) : filterSet ? (
+            data.length === 0 ? (
+              <DefaultPersonalizePage 
+                header="Please Select your more filters" 
+                subHeader="There is no news found for the particular filters"
+                personalized={toggleDrawer(true)}
+              />
+            ) : (
+              <NewsCard articles={data} />
+            )
+          ) : (
+            <DefaultPersonalizePage 
+              header="Please Select your personalized news" 
+              subHeader="Apply filters... Let’s start personalized!"
+              personalized={toggleDrawer(true)}
+            />
+          )}
       </Box>
     </>
   );

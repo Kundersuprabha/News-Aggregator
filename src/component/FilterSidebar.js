@@ -8,6 +8,8 @@ import {
   Box,
   IconButton,
   useMediaQuery,
+  Skeleton,
+  Stack
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -23,6 +25,19 @@ const FilterSidebar = ({
   const sources = values?.source || [];
   const authors = values?.author || [];
   const categories = values?.category || [];
+
+  const renderLoading = () => {
+    return(
+      <Stack spacing={1}>
+      <Skeleton variant="rectangular" width={210} height={20} />
+      <Skeleton variant="rectangular" width={210} height={20} />
+      <Skeleton variant="rectangular" width={210} height={20} />
+      <Skeleton variant="rectangular" width={210} height={20} />
+      <Skeleton variant="rectangular" width={210} height={20} />
+      <Skeleton variant="rectangular" width={210} height={20} />
+      </Stack>
+    )
+  }
 
   return (
     <Drawer open={open} onClose={onClose}>
@@ -62,74 +77,90 @@ const FilterSidebar = ({
           </Box>
         )}
 
-        <Typography variant="h6" gutterBottom sx={{ fontSize: "0.875rem", mt: isSmall ? 4 : 0 }}>
+       
+           <Typography variant="h6" gutterBottom sx={{ fontSize: "0.875rem", mt: isSmall ? 4 : 0 }}>
           Filter By Sources
         </Typography>
-        <FormGroup
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            flexWrap: "wrap",
-          }}
-        >
-          {sources.map((source) => (
-            <FormControlLabel
-              key={source}
-              control={
-                <Checkbox
-                  size="small"
-                  checked={filters.selectedSources.includes(source)}
-                  onChange={() => handleFilterChange("selectedSources", source)}
+        {
+          sources.length === 0 ? renderLoading() : 
+          <>
+            <FormGroup
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                flexWrap: "wrap",
+              }}
+            >
+              {sources.map((source) => (
+                <FormControlLabel
+                  key={source}
+                  control={
+                    <Checkbox
+                      size="small"
+                      checked={filters.selectedSources.includes(source)}
+                      onChange={() => handleFilterChange("selectedSources", source)}
+                    />
+                  }
+                  label={<Typography sx={{ fontSize: "0.75rem" }}>{source}</Typography>}
                 />
-              }
-              label={<Typography sx={{ fontSize: "0.75rem" }}>{source}</Typography>}
-            />
-          ))}
-        </FormGroup>
+              ))}
+            </FormGroup>
+          </>
+        }
 
         <Typography variant="h6" gutterBottom sx={{ fontSize: "0.875rem" }}>
           Filter By Authors
         </Typography>
-        <FormGroup
-          sx={{
-            display: "flex",
-            flexDirection: "row",
-            flexWrap: "wrap",
-          }}
-        >
-          {authors.map((author) => (
-            <FormControlLabel
-              key={author}
-              control={
-                <Checkbox
-                  size="small"
-                  checked={filters.selectedAuthors.includes(author)}
-                  onChange={() => handleFilterChange("selectedAuthors", author)}
+        {
+          authors.length === 0 ? renderLoading() : 
+          <>
+            <FormGroup
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                flexWrap: "wrap",
+              }}
+            >
+              {authors.map((author) => (
+                <FormControlLabel
+                  key={author}
+                  control={
+                    <Checkbox
+                      size="small"
+                      checked={filters.selectedAuthors.includes(author)}
+                      onChange={() => handleFilterChange("selectedAuthors", author)}
+                    />
+                  }
+                  label={<Typography sx={{ fontSize: "0.75rem" }}>{author}</Typography>}
                 />
-              }
-              label={<Typography sx={{ fontSize: "0.75rem" }}>{author}</Typography>}
-            />
-          ))}
-        </FormGroup>
+              ))}
+            </FormGroup>
+          </>
+        }
 
         <Typography variant="h6" gutterBottom sx={{ fontSize: "0.875rem" }}>
           Filter By Categories
         </Typography>
-        <FormGroup>
-          {categories.map((category) => (
-            <FormControlLabel
-              key={category}
-              control={
-                <Checkbox
-                  size="small"
-                  checked={filters.selectedCategories.includes(category)}
-                  onChange={() => handleFilterChange("selectedCategories", category)}
+        {
+          categories.length === 0 ? renderLoading() : 
+          <>
+            <FormGroup>
+              {categories.map((category) => (
+                <FormControlLabel
+                  key={category}
+                  control={
+                    <Checkbox
+                      size="small"
+                      checked={filters.selectedCategories.includes(category)}
+                      onChange={() => handleFilterChange("selectedCategories", category)}
+                    />
+                  }
+                  label={<Typography sx={{ fontSize: "0.75rem" }}>{category}</Typography>}
                 />
-              }
-              label={<Typography sx={{ fontSize: "0.75rem" }}>{category}</Typography>}
-            />
-          ))}
-        </FormGroup>
+              ))}
+            </FormGroup>
+          </>
+        }
       </Box>
     </Drawer>
   );

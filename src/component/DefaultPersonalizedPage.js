@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Typography } from "@mui/material";
 import news from '../assets/pictures/news.jpg';
 
-const DefaultPersonalizePage = ({personalized}) => {
+const DefaultPersonalizePage = ({personalized, header, subHeader}) => {
   return (
     <Box
         sx={{
@@ -27,7 +27,7 @@ const DefaultPersonalizePage = ({personalized}) => {
     />
 
     <Typography variant="h5" sx={{ fontWeight: "bold", color: "#000000" }}>
-      Please Select your personalized news
+      {header}
     </Typography>
     <Typography
       variant="body1"
@@ -36,7 +36,7 @@ const DefaultPersonalizePage = ({personalized}) => {
         mb: 3,
       }}
     >
-      Apply filters... Let’s start personalized!
+      {subHeader}
     </Typography>
   </Box>
   );
