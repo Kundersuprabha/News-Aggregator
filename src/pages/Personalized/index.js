@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, CircularProgress, Button, useMediaQuery, Typography } from "@mui/material";
+import { Box, CircularProgress, Button, useMediaQuery } from "@mui/material";
 import Navbar from "../../component/Navbar";
 import FilterSidebar from "../../component/FilterSidebar";
 import NewsCard from "../../component/NewsCard";
